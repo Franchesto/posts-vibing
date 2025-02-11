@@ -19,6 +19,10 @@ class CreatePost extends Component
     public function submit()
     {
         $this->form->store();
+
+        $this->showForm();
+
+        $this->dispatch('post-created');
     }
     public function render()
     {
