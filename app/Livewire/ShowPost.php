@@ -17,7 +17,7 @@ class ShowPost extends Component
     #[On('post-created')]
     public function updatePostList()
     {
-        $this->posts = Post::latest()->get();
+        $this->posts = Post::all();
     }
 
     public function render()

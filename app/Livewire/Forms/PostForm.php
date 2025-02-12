@@ -9,6 +9,8 @@ use Livewire\Form;
 
 class PostForm extends Form
 {
+    public ?Post $post;
+
     #[Validate('required|max:255')]
     public $message;
 
@@ -22,7 +24,16 @@ class PostForm extends Form
         ]);
 
         $this->reset('message');
+    }
+    public function setPost(Post $post)
+    {
+        $this->post = $post;
 
-
+        $this->fill($post->toArray());
+    }
+    public function update()
+    {
+        $this->validate();
+        $this->post->update($this->only('message'));
     }
 }

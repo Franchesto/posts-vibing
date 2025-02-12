@@ -4,6 +4,6 @@
             {{ __('Feed') }}
         </h2>
     </x-slot>
-    <livewire:create-post :user_id="auth()->id()" />
+
     <livewire:show-post />
 </x-app-layout>
