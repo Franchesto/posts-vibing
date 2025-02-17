@@ -5,5 +5,5 @@
         </h2>
     </x-slot>
 
-    <livewire:show-post />
+    <livewire:crud-post/>
 </x-app-layout>
