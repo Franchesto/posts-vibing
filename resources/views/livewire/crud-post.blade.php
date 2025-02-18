@@ -12,32 +12,21 @@
         @foreach ($posts as $post)
             <tr>
                 <td class="border px-4 py-2">{{ $post->message }}</td>
-                <td class="border px-4 py-2">
-                    <button wire:click="edit({{ $post->id }})" class="bg-green-500 text-white px-4 py-2 rounded">Edit</button>
-                    <button wire:click="delete({{ $post->id }})" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+                <td class="border px-4 py-2 flex justify-end space-x-4  ">
+                    @canany(['delete', 'edit'], $post)
+                        <button wire:click="edit({{ $post->id }})">
+                            @svg('heroicon-o-pencil', 'w-4 h-4')
+                        </button>
+                        <button wire:click="delete({{ $post->id }})" wire:confirm="Tem certeza que seja deleter esse post?" >
+                            @svg('heroicon-o-trash', 'w-4 h-4 text-red-500')
+                        </button>
+                    @endcanany
                 </td>
             </tr>
         @endforeach
         </tbody>
     </table>
 
-    <!-- Modal -->
-    @if ($isModalOpen)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="bg-white p-8 rounded-lg w-1/2">
-                <h2 class="text-xl mb-4">{{ $postId ? 'Edit Post' : 'Create Post' }}</h2>
-                <form wire:submit="store">
-                    <div class="mb-4">
-                        <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
-                        <textarea wire:model="message" id="message" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" autofocus></textarea>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button" wire:click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
+    @include('partials.modal', ['isModalOpen' => $isModalOpen])
     {{ $posts->links() }}
 </div>

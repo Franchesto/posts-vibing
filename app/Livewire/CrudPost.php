@@ -3,6 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Post;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -25,24 +28,13 @@ class CrudPost extends Component
 
     public function create()
     {
-        $this->resetInputFields();
-        $this->openModal();
+        $this->reset('message', 'postId');
+        $this->toggleModal();
     }
 
-    public function openModal()
+    public function toggleModal()
     {
-        $this->isModalOpen = true;
-    }
-
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
-    }
-
-    public function resetInputFields()
-    {
-        $this->postId = '';
-        $this->message = '';
+        $this->isModalOpen = !$this->isModalOpen;
     }
 
     public function store()
@@ -54,22 +46,30 @@ class CrudPost extends Component
             'user_id' => auth()->id()
         ]);
 
-        $this->closeModal();
-        $this->resetInputFields();
+        $this->toggleModal();
+
+        $this->reset('message', 'postId');
     }
 
     public function edit($id)
     {
         $post = Post::findOrFail($id);
+
+        $this->authorize('update', $post);
+
         $this->postId = $id;
         $this->message = $post->message;
 
-        $this->openModal();
+        $this->toggleModal();
     }
 
     public function delete($id)
     {
-        Post::find($id)->delete();
+        $post = Post::findOrFail($id);
+
+        $this->authorize('delete', $post);
+
+        $post->delete();
     }
 
 }
