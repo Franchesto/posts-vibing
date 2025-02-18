@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $user = User::factory(3)->hasPosts(4)->create();
+        $user = User::factory(8)->hasPosts(2)->create();
     }
 }
