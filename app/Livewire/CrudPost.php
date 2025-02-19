@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Forms\PostForm;
 use App\Models\Post;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
@@ -14,9 +15,7 @@ class CrudPost extends Component
 {
     use WithPagination;
 
-    #[Validate('required|max:255')]
-    public $message;
-    public $postId;
+    public PostForm $postForm;
     public $isModalOpen = false;
 
     public function render()
@@ -28,7 +27,6 @@ class CrudPost extends Component
 
     public function create()
     {
-        $this->reset('message', 'postId');
         $this->toggleModal();
     }
 
@@ -39,16 +37,9 @@ class CrudPost extends Component
 
     public function store()
     {
-        $this->validate();
-
-        Post::updateOrCreate(['id' => $this->postId], [
-            'message' => $this->message,
-            'user_id' => auth()->id()
-        ]);
+        $this->postForm->create();
 
         $this->toggleModal();
-
-        $this->reset('message', 'postId');
     }
 
     public function edit($id)
@@ -57,8 +48,7 @@ class CrudPost extends Component
 
         $this->authorize('update', $post);
 
-        $this->postId = $id;
-        $this->message = $post->message;
+        $this->postForm->edit($post);
 
         $this->toggleModal();
     }
@@ -69,7 +59,7 @@ class CrudPost extends Component
 
         $this->authorize('delete', $post);
 
-        $post->delete();
+        $this->postForm->delete($post);
     }
 
 }
