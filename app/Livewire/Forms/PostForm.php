@@ -31,6 +31,7 @@ class PostForm extends Form
 
         $this->message = $post->message;
     }
+
     public function delete($post)
     {
         $post->delete();
