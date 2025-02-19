@@ -4,7 +4,7 @@
             {{ __('Feed') }}
         </h2>
     </x-slot>
-    
+
     <livewire:crud-post/>
 
 </x-app-layout>
