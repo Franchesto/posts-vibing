@@ -14,6 +14,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     const ROLE_USER = 'user';
+
     const ROLE_ADMIN = 'admin';
 
     public function posts(): HasMany

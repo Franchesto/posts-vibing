@@ -4,10 +4,6 @@ namespace App\Livewire;
 
 use App\Livewire\Forms\PostForm;
 use App\Models\Post;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,6 +12,7 @@ class CrudPost extends Component
     use WithPagination;
 
     public PostForm $postForm;
+
     public $isModalOpen = false;
 
     public function render()
@@ -32,7 +29,7 @@ class CrudPost extends Component
 
     public function toggleModal()
     {
-        $this->isModalOpen = !$this->isModalOpen;
+        $this->isModalOpen = ! $this->isModalOpen;
     }
 
     public function store()
@@ -61,5 +58,4 @@ class CrudPost extends Component
 
         $this->postForm->delete($post);
     }
-
 }

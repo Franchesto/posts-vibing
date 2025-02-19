@@ -19,7 +19,7 @@ class PostForm extends Form
 
         Post::updateOrCreate(['id' => $this->postId], [
             'message' => $this->message,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
 
         $this->reset();
@@ -31,6 +31,7 @@ class PostForm extends Form
 
         $this->message = $post->message;
     }
+
     public function delete($post)
     {
         $post->delete();

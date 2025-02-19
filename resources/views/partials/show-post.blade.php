@@ -27,6 +27,21 @@
                             </div>
                         </address>
                         <p class="ml-3">{{ $post->message }}</p>
+                        <div class="flex mt-2 space-x-6 items-center ml-3 text-gray-600">
+                            <div class="flex items-center space-x-1 text-sm">
+                                <button wire:click="repost">
+                                    @svg('heroicon-s-arrow-path-rounded-square', 'w-4 h-4')
+                                </button>
+                                <span> 2k </span>
+                            </div>
+                            <livewire:like-post :post_id="$post->id" />
+                            <div class="flex items-center space-x-1 text-sm">
+                                <button wire:click="comment">
+                                    @svg('heroicon-s-chat-bubble-bottom-center-text', 'w-4 h-4')
+                                </button>
+                                <span> 8k </span>
+                            </div>
+                        </div>
                     </div>
                 @endforeach
             </div>
