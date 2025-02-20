@@ -3,8 +3,8 @@
         <div class="bg-gray-300 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-900">
                 <button wire:click="create" class="mb-4 bg-blue-500 text-white px-4 py-2 rounded">Create Post</button>
-                @foreach($posts as $post)
-                    <div class="border-b pb-4 mb-4 bg-gray-200 rounded">
+                    @foreach($this->posts as $post)
+                    <div wire:key="{{ $post->id }}" class="border-b pb-4 mb-4 bg-gray-200 rounded">
                         <address class="flex items-center mb-6 not-italic">
                             <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white mt-2 ml-2">
                                 <img class="mr-4 w-16 h-16 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-2.jpg" alt="{{ $post->user->name }}">
@@ -34,7 +34,12 @@
                                 </button>
                                 <span> 2k </span>
                             </div>
-                            <livewire:like-post :post_id="$post->id" />
+                            <div class="flex items-center space-x-1 text-sm">
+                                <button wire:click="like({{ $post->id }})">
+                                    @svg('heroicon-s-hand-thumb-up', ['class' => 'w-4 h-4 ' . ($post->liked ? 'text-red-600' : 'text-gray-600')])
+                                </button>
+                                <span> {{ $post->likes_count }} </span>
+                            </div>
                             <div class="flex items-center space-x-1 text-sm">
                                 <button wire:click="comment">
                                     @svg('heroicon-s-chat-bubble-bottom-center-text', 'w-4 h-4')

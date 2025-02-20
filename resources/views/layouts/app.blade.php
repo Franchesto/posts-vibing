@@ -33,5 +33,6 @@
                 {{ $slot }}
             </main>
         </div>
+        <script src="https://cdn.jsdelivr.net/gh/underground-works/clockwork-browser@1/dist/toolbar.js"></script>
     </body>
 </html>

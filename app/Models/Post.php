@@ -16,11 +16,8 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
-    //    protected static function boot()
-    //    {
-    //        parent::boot();
-    //        static::creating(function ($post) {
-    //            $post->user_id = Auth::id();
-    //        });
-    //    }
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
 }
