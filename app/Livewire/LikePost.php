@@ -1,12 +1,13 @@
 <?php
+
 //
-//namespace App\Livewire;
+// namespace App\Livewire;
 //
-//use App\Models\Like;
-//use Livewire\Component;
+// use App\Models\Like;
+// use Livewire\Component;
 //
-//class LikePost extends Component
-//{
+// class LikePost extends Component
+// {
 //    public $post_id;
 //
 //    public bool $isLiked;
@@ -37,4 +38,4 @@
 //    {
 //        return view('livewire.like-post', ['likes' => Like::where('post_id', $this->post_id)->count()]);
 //    }
-//}
+// }

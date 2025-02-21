@@ -2,8 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Actions\LikeAction;
 use App\Livewire\Forms\PostForm;
-use App\Models\Like;
 use App\Models\Post;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -28,24 +28,19 @@ class CrudPost extends Component
             ->latest()
             ->paginate(10);
     }
+
     public function render()
     {
         return view('livewire.crud-post');
     }
 
-    public function like($post_id)
+    public function like(LikeAction $like_action, int $post_id)
     {
-        $flag = $this->posts->find($post_id)->liked;
-        if($flag){
-            $this->posts->find($post_id)->likes_count--;
-            $this->posts->find($post_id)->liked = false;
-            Like::where('post_id', $post_id)->where('user_id', auth()->id())->delete();
-        }
-        else{
-            $this->posts->find($post_id)->liked = true;
-            $this->posts->find($post_id)->likes_count++;
-            Like::create(['post_id' => $post_id, 'user_id' => auth()->id()]);
-        }
+        $updatedPost = $like_action->execute($post_id);
+
+        $this->posts->transform(function ($post) use ($updatedPost) {
+            return $post->id === $updatedPost->id ? $updatedPost : $post;
+        });
     }
 
     public function create()
