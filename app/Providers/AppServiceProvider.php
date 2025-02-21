@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Post;
-use App\Models\User;
-use Illuminate\Support\Facades\Gate;
+use App\Contracts\PostInterface;
+use App\Services\PostService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,14 +13,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(PostInterface::class, PostService::class);
     }
 
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void {}
 }

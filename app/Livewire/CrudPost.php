@@ -2,12 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Actions\LikeAction;
 use App\Livewire\Forms\PostForm;
 use App\Models\Post;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Livewire\Attributes\Validate;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,13 +14,33 @@ class CrudPost extends Component
     use WithPagination;
 
     public PostForm $postForm;
+
     public $isModalOpen = false;
+
+    #[Computed]
+    public function posts()
+    {
+        return Post::with('user')
+            ->withCount('likes')
+            ->withExists(['likes as liked' => function ($query) {
+                $query->where('user_id', auth()->id());
+            }])
+            ->latest()
+            ->paginate(10);
+    }
 
     public function render()
     {
-        return view('livewire.crud-post', [
-            'posts' => Post::latest()->paginate(10),
-        ]);
+        return view('livewire.crud-post');
+    }
+
+    public function like(LikeAction $like_action, int $post_id)
+    {
+        $updatedPost = $like_action->execute($post_id);
+
+        $this->posts->transform(function ($post) use ($updatedPost) {
+            return $post->id === $updatedPost->id ? $updatedPost : $post;
+        });
     }
 
     public function create()
@@ -32,7 +50,7 @@ class CrudPost extends Component
 
     public function toggleModal()
     {
-        $this->isModalOpen = !$this->isModalOpen;
+        $this->isModalOpen = ! $this->isModalOpen;
     }
 
     public function store()
@@ -61,5 +79,4 @@ class CrudPost extends Component
 
         $this->postForm->delete($post);
     }
-
 }
