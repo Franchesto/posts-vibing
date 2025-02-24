@@ -24,6 +24,7 @@ class CrudPost extends Component
         return Post::with(['user:id,name','comments','comments.user:id,name'])
             ->withCount('likes')
             ->withExists(['likes as liked' => function ($query) {$query->where('user_id', auth()->id());}])
+            ->latest()
             ->paginate(10);
     }
 
