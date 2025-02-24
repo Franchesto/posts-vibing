@@ -17,15 +17,13 @@ class CrudPost extends Component
 
     public $isModalOpen = false;
 
+    public $toggleComments = false;
     #[Computed]
     public function posts()
     {
-        return Post::with('user')
+        return Post::with(['user:id,name','comments','comments.user:id,name'])
             ->withCount('likes')
-            ->withExists(['likes as liked' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }])
-            ->latest()
+            ->withExists(['likes as liked' => function ($query) {$query->where('user_id', auth()->id());}])
             ->paginate(10);
     }
 
@@ -51,6 +49,10 @@ class CrudPost extends Component
     public function toggleModal()
     {
         $this->isModalOpen = ! $this->isModalOpen;
+    }
+    public function comments()
+    {
+        $this->toggleComments = ! $this->toggleComments;
     }
 
     public function store()
