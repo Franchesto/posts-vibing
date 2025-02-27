@@ -11,6 +11,8 @@ class PostForm extends Form
     #[Validate('required|max:255')]
     public $message = '';
 
+    public $content = '';
+
     public $postId;
 
     public function create()
@@ -34,6 +36,14 @@ class PostForm extends Form
 
     public function delete($post)
     {
-        $post->delete();
+        $post->deleted_at = now();
+        $post->save();
+    }
+
+    public function createCom($post)
+    {
+        $post->comments()->create(['content' => $this->content, 'user_id' => auth()->id(),]);
+
+        $this->reset();
     }
 }

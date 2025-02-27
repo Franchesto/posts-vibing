@@ -1,12 +1,12 @@
 @foreach($this->posts as $post)
-<div wire:key="{{ $post->id }}" x-data="{toggle: false}" class="mt-2 max-w-2xl mx-auto mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+<div wire:key="{{ $post->id }}" x-data="{toggle: false}" class="mt-2 max-w-2xl mx-auto mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 dark:bg-gray-800">
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <span class="text-gray-600 font-medium">{{ strtoupper(substr($post->user->name, 0, 1)) }}</span>
+                <span class="text-gray-600 font-medium dark:text-black">{{ strtoupper(substr($post->user->name, 0, 1)) }}</span>
             </div>
             <div>
-                <h3 class="text-gray-900 font-semibold text-lg hover:text-blue-600 cursor-pointer">
+                <h3 class="text-gray-900 font-semibold text-lg hover:text-blue-600 cursor-pointer dark:text-white">
                     {{ $post->user->name }}
                 </h3>
                 <p class="text-gray-500 text-sm">
@@ -23,7 +23,7 @@
 
             <div x-show="open" class="absolute right-0 mt-1 w-32 bg-white shadow-md rounded-md z-10">
                 @canany(['update', 'delete'], $post)
-                    <button wire:click="edit({{ $post->id }})" class="block w-full text-left p-2 text-gray-700 hover:bg-gray-100">Edit</button>
+                    <button wire:click="edit({{ $post->id }})" @click="toggleModal = true, open = false" class="block w-full text-left p-2 text-gray-700 hover:bg-gray-100">Edit</button>
                     <button wire:click="delete({{ $post->id }})" wire:confirm="Are You Sure?" class="block w-full text-left p-2 text-gray-700 hover:bg-gray-100">Delete</button>
                 @endcanany
                     <button wire:click="report({{ $post->id }})" wire:confirm="Are You Sure?" class="block w-full text-left p-2 text-gray-700 hover:bg-gray-100">Report</button>
@@ -34,7 +34,7 @@
     </div>
 
     <div class="mb-6">
-        <p class="text-gray-800 leading-relaxed">
+        <p class="text-gray-800 leading-relaxed dark:text-white">
             {{ $post->message }}
         </p>
     </div>
