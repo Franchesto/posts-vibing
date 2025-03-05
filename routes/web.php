@@ -16,4 +16,5 @@ Route::view('posts', 'posts')
     ->middleware(['auth'])
     ->name('posts');
 
+
 require __DIR__.'/auth.php';

@@ -15,16 +15,15 @@ class CrudPost extends Component
 
     public PostForm $postForm;
 
-    public $isModalOpen = false;
-
     #[Computed]
     public function posts()
     {
-        return Post::with('user')
+        return Post::with(['user:id,name', 'comments', 'comments.user:id,name'])
             ->withCount('likes')
             ->withExists(['likes as liked' => function ($query) {
                 $query->where('user_id', auth()->id());
             }])
+            ->where('deleted_at', null)
             ->latest()
             ->paginate(10);
     }
@@ -43,21 +42,16 @@ class CrudPost extends Component
         });
     }
 
-    public function create()
+    public function createComment($postId)
     {
-        $this->toggleModal();
-    }
+        $post = Post::find($postId);
 
-    public function toggleModal()
-    {
-        $this->isModalOpen = ! $this->isModalOpen;
+        $this->postForm->createCom($post);
     }
 
     public function store()
     {
         $this->postForm->create();
-
-        $this->toggleModal();
     }
 
     public function edit($id)
@@ -67,8 +61,6 @@ class CrudPost extends Component
         $this->authorize('update', $post);
 
         $this->postForm->edit($post);
-
-        $this->toggleModal();
     }
 
     public function delete($id)
