@@ -9,6 +9,7 @@ use Livewire\Livewire;
 beforeEach(function () {
     $this->user = User::factory()->create();
     $this->actingAs($this->user);
+    $this->actingAs($this->user);
 });
 
 describe('Crud Post', function () {
