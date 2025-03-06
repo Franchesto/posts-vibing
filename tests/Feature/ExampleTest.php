@@ -1,66 +1,76 @@
 <?php
 
+use App\Actions\LikeAction;
 use App\Livewire\CrudPost;
 use App\Models\Post;
 use App\Models\User;
-use App\Policies\PostPolicy;
-use Illuminate\Support\Facades\Gate;
+use Livewire\Livewire;
 
-it('checks posts successful response and authorization', function () {
-
-    $user = User::factory()->create();
-
-    $this->actingAs($user);
-
-    $response = $this->get(route('posts'));
-
-    $response->assertStatus(200);
-
+beforeEach(function () {
+    $this->user = User::factory()->create();
+    $this->actingAs($this->user);
+    $this->actingAs($this->user);
 });
 
-it('tests ability to create a post', function(){
+describe('Crud Post', function () {
+    it('renders component correctly', function () {
+        Livewire::test(CrudPost::class)
+            ->assertSee('Create New Post');
+    });
 
-    $user = User::factory()->create();
-    $this->actingAs($user);
+    it('validates post creation', function () {
+        Livewire::test(CrudPost::class)
+            ->set('postForm.message', '')
+            ->call('store')
+            ->assertHasErrors(['postForm.message' => 'required']);
+    });
 
-    Livewire::test(CrudPost::class)
-    ->set('postForm.message', 'testing dewnik')
-    ->call('store');
+    it('creates and renders posts correctly', function () {
+        Post::factory()->create(['message' => 'Test Post']);
 
-    expect(Post::count())->toBe(1);
-    expect(Post::first()->message)->toBe('testing dewnik');
-});
+        Livewire::test(CrudPost::class)
+            ->assertSee('Test Post');
+    });
 
-it('tests ability to edit a post', function(){
+    it('updates an existing post', function () {
+        $post = Post::factory()->for($this->user)->create(['message' => 'Old message']);
 
-    $user = User::factory()->create();
-    $this->actingAs($user);
-
-    $post = Post::factory()->for($user)->create();
-
-    $policy = new PostPolicy();
-
-    expect($policy->update($user, $post))->toBeTrue();
+        Livewire::test(CrudPost::class)
+            ->set('postForm.postId', $post->id)
+            ->set('postForm.message', 'Updated message')
+            ->call('store')
+            ->assertSee('Updated message');
 
     });
 
-test('an authenticated user can edit a post via livewire component', function () {
-    $this->refreshDatabase();
+    it('executes like action', function () {
+        $post = Post::factory()->for($this->user)->create();
 
-    $user = User::factory()->create();
-    $this->actingAs($user);
+        $mockLikeAction = Mockery::mock(LikeAction::class);
+        $mockLikeAction->shouldReceive('execute')->once()->with($post->id);
 
-    $post = Post::factory()->create([
-        'message' => 'Original Content',
-        'user_id' => $user->id,
-    ]);
+        Livewire::test(CrudPost::class)
+            ->call('like', $mockLikeAction, $post->id);
+    });
 
-    Livewire::test(CrudPost::class, ['post' => $post])
-        ->set('postForm.message', 'Updated Content')
-        ->call('edit', $post->id)
-        ->assertHasNoErrors();
+    it('creates and renders a comment for a post', function () {
+        $post = Post::factory()->create();
 
-    $post->refresh();
+        Livewire::test(CrudPost::class)
+            ->assertSee($post->message)
+            ->set('postForm.content', 'Test Comment!')
+            ->call('createComment', $post->id)
+            ->assertSee('Test Comment');
+    });
 
-    expect($post->message)->toBe('Updated Content');
+    it('soft deletes a post', function () {
+        $post = Post::factory()->for($this->user)->create();
+
+        Livewire::test(CrudPost::class)
+            ->assertSee($post->message)
+            ->call('delete', $post->id)
+            ->assertDontSee($post->message);
+
+    });
+
 });
