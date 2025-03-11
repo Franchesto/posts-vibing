@@ -2,14 +2,15 @@
 
 namespace App\Livewire;
 
-use App\Actions\LikeAction;
+use App\Actions\ToggleLikeAction;
 use App\Livewire\Forms\PostForm;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class CrudPost extends Component
+class PostManager extends Component
 {
     use WithPagination;
 
@@ -21,25 +22,18 @@ class CrudPost extends Component
         return Post::with(['user:id,name', 'comments', 'comments.user:id,name'])
             ->withCount('likes')
             ->withExists(['likes as liked' => function ($query) {
-                $query->where('user_id', auth()->id());
+                $query->where('user_id', Auth::id());
             }])
             ->where('deleted_at', null)
             ->latest()
             ->paginate(10);
     }
 
-    public function render()
+    public function like(ToggleLikeAction $action, int $post_id)
     {
-        return view('livewire.crud-post');
-    }
+        $post = Post::find($post_id);
 
-    public function like(LikeAction $like_action, int $post_id)
-    {
-        $updatedPost = $like_action->execute($post_id);
-
-        $this->posts->transform(function ($post) use ($updatedPost) {
-            return $post->id === $updatedPost->id ? $updatedPost : $post;
-        });
+        $action($post, Auth::user());
     }
 
     public function createComment($postId)
@@ -54,7 +48,7 @@ class CrudPost extends Component
         $this->postForm->create();
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $post = Post::findOrFail($id);
 
@@ -70,5 +64,10 @@ class CrudPost extends Component
         $this->authorize('delete', $post);
 
         $this->postForm->delete($post);
+    }
+
+    public function render()
+    {
+        return view('livewire.crud-post');
     }
 }

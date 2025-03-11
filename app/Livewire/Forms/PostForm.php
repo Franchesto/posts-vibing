@@ -42,7 +42,7 @@ class PostForm extends Form
 
     public function createCom($post)
     {
-        $post->comments()->create(['content' => $this->content, 'user_id' => auth()->id(),]);
+        $post->comments()->create(['content' => $this->content, 'user_id' => auth()->id()]);
 
         $this->reset();
     }

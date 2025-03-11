@@ -4,5 +4,5 @@ namespace App\Contracts;
 
 interface PostInterface
 {
-    public function find();
+    public function getPostsWithLikes();
 }
