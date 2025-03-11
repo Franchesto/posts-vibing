@@ -2,9 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Actions\LikeAction;
+use App\Actions\ToggleLikeAction;
 use App\Livewire\Forms\PostForm;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -30,16 +31,14 @@ class CrudPost extends Component
 
     public function render()
     {
-        return view('livewire.crud-post');
+        return view('livewire.post-manager');
     }
 
-    public function like(LikeAction $like_action, int $post_id)
+    public function like(ToggleLikeAction $action, int $post_id)
     {
-        $updatedPost = $like_action->execute($post_id);
+        $post = Post::find($post_id);
 
-        $this->posts->transform(function ($post) use ($updatedPost) {
-            return $post->id === $updatedPost->id ? $updatedPost : $post;
-        });
+        $action($post, Auth::user());
     }
 
     public function createComment($postId)
