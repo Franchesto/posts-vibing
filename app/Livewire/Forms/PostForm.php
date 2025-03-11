@@ -37,12 +37,13 @@ class PostForm extends Form
     public function delete($post)
     {
         $post->deleted_at = now();
+
         $post->save();
     }
 
     public function createCom($post)
     {
-        $post->comments()->create(['content' => $this->content, 'user_id' => auth()->id(),]);
+        $post->comments()->create(['content' => $this->content, 'user_id' => auth()->id()]);
 
         $this->reset();
     }

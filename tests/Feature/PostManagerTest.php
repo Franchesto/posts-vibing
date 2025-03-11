@@ -1,6 +1,5 @@
 <?php
 
-use App\Actions\ToggleLikeAction;
 use App\Livewire\CrudPost;
 use App\Models\Post;
 use App\Models\User;

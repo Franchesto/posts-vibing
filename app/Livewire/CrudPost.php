@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Actions\LikeAction;
 use App\Actions\ToggleLikeAction;
 use App\Livewire\Forms\PostForm;
 use App\Models\Post;
@@ -41,6 +40,7 @@ class CrudPost extends Component
 
         $action($post, Auth::user());
     }
+
     public function createComment($postId)
     {
         $post = Post::find($postId);

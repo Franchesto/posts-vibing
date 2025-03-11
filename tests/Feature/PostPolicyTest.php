@@ -11,12 +11,12 @@ beforeEach(function () {
 
 describe('post policies', function () {
     it('validates guest access for posts route', function () {
-       $response = $this->get(route('posts'));
+        $response = $this->get(route('posts'));
 
-       $response->assertRedirect('login');
+        $response->assertRedirect('login');
     });
 
-    it('denies a non-owner from editing another user’s post', function (){
+    it('denies a non-owner from editing another user’s post', function () {
         $this->otherUser = User::factory()->create();
         $this->actingAs($this->otherUser);
 
@@ -25,7 +25,7 @@ describe('post policies', function () {
             ->assertForbidden();
     });
 
-    it('denies a non-owner from deleting another user’s post', function (){
+    it('denies a non-owner from deleting another user’s post', function () {
         $this->otherUser = User::factory()->create();
         $this->actingAs($this->otherUser);
 
