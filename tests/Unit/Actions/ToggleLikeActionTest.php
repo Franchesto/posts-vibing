@@ -5,7 +5,7 @@ use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
 
-it('can like a post when not previously liked', function () {
+it('correctly instantiates toggleLikeAction class', function () {
     // Arrange
     $user = User::factory()->create();
     $post = Post::factory()->create();

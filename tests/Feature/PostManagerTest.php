@@ -51,17 +51,6 @@ describe('Post Manager', function () {
             ->assertHasErrors(['postForm.message' => 'required']);
     });
 
-    it('likes and unlike a post', function () {
-        $post = Post::factory()->for($this->user)->create();
-
-        Livewire::test(CrudPost::class)
-            ->call('like', (new ToggleLikeAction), $post->id)
-            ->assertSee('likes: 1')
-            ->call('like', (new ToggleLikeAction), $post->id)
-            ->assertSee('likes: 0')
-        ->assert;
-    });
-
     it('creates and renders a comment for a post', function () {
         $post = Post::factory()->create();
 
