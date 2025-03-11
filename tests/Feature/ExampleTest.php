@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\LikeAction;
+use App\Actions\ToggleLikeAction;
 use App\Livewire\CrudPost;
 use App\Models\Post;
 use App\Models\User;
@@ -9,10 +9,9 @@ use Livewire\Livewire;
 beforeEach(function () {
     $this->user = User::factory()->create();
     $this->actingAs($this->user);
-    $this->actingAs($this->user);
 });
 
-describe('Crud Post', function () {
+describe('Post Manager', function () {
     it('renders component correctly', function () {
         Livewire::test(CrudPost::class)
             ->assertSee('Create New Post');
@@ -40,17 +39,27 @@ describe('Crud Post', function () {
             ->set('postForm.message', 'Updated message')
             ->call('store')
             ->assertSee('Updated message');
-
     });
 
-    it('executes like action', function () {
-        $post = Post::factory()->for($this->user)->create();
-
-        $mockLikeAction = Mockery::mock(LikeAction::class);
-        $mockLikeAction->shouldReceive('execute')->once()->with($post->id);
+    it('validates editing a post', function () {
+        $post = Post::factory()->for($this->user)->create(['message' => 'Old message']);
 
         Livewire::test(CrudPost::class)
-            ->call('like', $mockLikeAction, $post->id);
+            ->set('postForm.postId', $post->id)
+            ->set('postForm.message', '')
+            ->call('store')
+            ->assertHasErrors(['postForm.message' => 'required']);
+    });
+
+    it('likes and unlike a post', function () {
+        $post = Post::factory()->for($this->user)->create();
+
+        Livewire::test(CrudPost::class)
+            ->call('like', (new ToggleLikeAction), $post->id)
+            ->assertSee('likes: 1')
+            ->call('like', (new ToggleLikeAction), $post->id)
+            ->assertSee('likes: 0')
+        ->assert;
     });
 
     it('creates and renders a comment for a post', function () {
@@ -70,7 +79,6 @@ describe('Crud Post', function () {
             ->assertSee($post->message)
             ->call('delete', $post->id)
             ->assertDontSee($post->message);
-
     });
 
 });

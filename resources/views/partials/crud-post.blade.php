@@ -22,10 +22,10 @@
             </button>
 
             <div x-show="open" class="absolute right-0 mt-1 w-32 bg-white shadow-md rounded-md z-10">
-                @canany(['update', 'delete'], $post)
+{{--                @canany(['update', 'delete'], $post)--}}
                     <button wire:click="edit({{ $post->id }})" @click="toggleModal = true, open = false" class="block w-full text-left p-2 text-gray-700 hover:bg-gray-100">Edit</button>
                     <button wire:click="delete({{ $post->id }})" wire:confirm="Are You Sure?" class="block w-full text-left p-2 text-gray-700 hover:bg-gray-100">Delete</button>
-                @endcanany
+{{--                @endcanany--}}
                     <button wire:click="report({{ $post->id }})" wire:confirm="Are You Sure?" class="block w-full text-left p-2 text-gray-700 hover:bg-gray-100">Report</button>
 
             </div>
