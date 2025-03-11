@@ -1,6 +1,6 @@
 <?php
 
-use App\Livewire\PostManager;
+use App\Livewire\CrudPost;
 use App\Models\Post;
 use App\Models\User;
 use function Pest\Laravel\actingAs;
@@ -15,7 +15,7 @@ describe('Post Policies', function () {
         $otherUser = User::factory()->create();
         $this->actingAs($otherUser);
 
-        Livewire::test(PostManager::class)
+        Livewire::test(CrudPost::class)
             ->set('postForm.postId', $this->post->id)
             ->set('postForm.message', 'A Message')
             ->call('store')
