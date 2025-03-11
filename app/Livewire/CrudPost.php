@@ -11,7 +11,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class PostManager extends Component
+class CrudPost extends Component
 {
     use WithPagination;
 
